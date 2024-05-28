@@ -90,6 +90,7 @@ struct AppInfo: Codable, Identifiable, Hashable {
         self.name = getNameFromData(Data: data)
         self.currentVersion = getCurrentVersion(Data: data)
         self.iconBase64 = getIcon(Data: data)
+        self.dateUpdate = getDateUpdate(Data: data)
     }
     
     mutating func updateVersion() {

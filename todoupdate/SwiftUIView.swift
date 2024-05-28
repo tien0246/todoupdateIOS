@@ -10,6 +10,7 @@ import SwiftUI
 struct ApppRow: View {
     @Binding var app: AppInfo
     @Environment(\.colorScheme) var colorScheme: ColorScheme
+    
     var body: some View {
         NavigationLink(destination: AppDetailView(app: $app)) {
             HStack {

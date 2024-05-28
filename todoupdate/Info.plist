@@ -4,7 +4,7 @@
 <dict>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>com.tien0246.todoupdate.refreshApp</string>
+		<string>com.tien0246.todoupdate.refresh</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

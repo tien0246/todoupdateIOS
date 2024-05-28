@@ -48,7 +48,7 @@ struct CountryView: View {
                 )
                 .padding(.horizontal, 20)
             
-            List(allCountries.filter({ searchText.isEmpty ? true : $0.name.lowercased().contains(searchText.lowercased()) || $0.code.lowercased().contains(searchText.lowercased()) }), id: \.self) { country in
+            List(allCountries.filter({ searchText.isEmpty ? true : $0.name.lowercased().contains(searchText.lowercased()) || $0.code.lowercased().contains(searchText.lowercased()) }), id: \.code) { country in
                 HStack {
                     Text(country.name)
                     Spacer()

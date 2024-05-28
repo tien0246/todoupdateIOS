@@ -21,20 +21,30 @@ struct todoupdateApp: App {
             NavigationView {
                 ContentView(viewModel: model)
             }
+            .onAppear() {
+                appDelegate.scheduleBackgroundProcessing()
+            }
         }
         .onChange(of: scenePhase) { phase in
             if phase == .background {
                 model.save()
+                
             }
         }
     }
 }
 
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.tien0246.todoupdate.refreshApp", using: nil) { task in
-            self.handleBackgroundProcessing(task: task as! BGAppRefreshTask)
+        let isRegister = BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.tien0246.todoupdate.refresh", using: nil) { task in
+            guard let task = task as? BGAppRefreshTask else {
+                task.setTaskCompleted(success: false)
+                return
+            }
+            self.handleBackgroundProcessing(task: task)
         }
+        
+        print(isRegister)
 
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
             if granted {
@@ -49,6 +59,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
+        BGTaskScheduler.shared.cancelAllTaskRequests()
         self.scheduleBackgroundProcessing()
     }
 
@@ -65,9 +76,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    private func scheduleBackgroundProcessing() {
-        let request = BGAppRefreshTaskRequest(identifier: "com.tien0246.todoupdate.refreshApp")
-        request.earliestBeginDate = Date(timeIntervalSinceNow: 3 * 3600)
+    func scheduleBackgroundProcessing() {
+        let request = BGAppRefreshTaskRequest(identifier: "com.tien0246.todoupdate.refresh")
+        request.earliestBeginDate = Date(timeIntervalSinceNow: 5 * 60)
 
         do {
             try BGTaskScheduler.shared.submit(request)

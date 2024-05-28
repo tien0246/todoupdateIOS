@@ -18,6 +18,7 @@ class ViewModel: ObservableObject {
         do {
             let data: Data = try Data(contentsOf: savePath)
             listApp = try JSONDecoder().decode([AppInfo].self, from: data)
+            listApp.sort { $0.dateUpdate < $1.dateUpdate }
         } catch {
             listApp = []
         }
@@ -31,6 +32,7 @@ class ViewModel: ObservableObject {
 
     func addApp(app: AppInfo) {
         listApp.append(app)
+        listApp.sort { $0.dateUpdate < $1.dateUpdate }
     }
 
 //    func removeApp(_ index: IndexSet) {
@@ -71,6 +73,7 @@ class ViewModel: ObservableObject {
         }
 
         dispatchGroup.notify(queue: .main) {
+            self.listApp.sort { $0.dateUpdate < $1.dateUpdate }
             print("done refresh")
             completion(updatedApps)
         }
